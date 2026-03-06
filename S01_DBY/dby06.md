@@ -305,6 +305,9 @@ where e.id = w.empl_id
         where empl_id = 13
     );
 ```
+- 이거 문제 있데요! 이렇게 하면 안됨
+    - 만약에 A가 1번만 했고, B가 1번, 3번 했을때, B의 3번과 A의 1번을 비교하면 통과되기 때문에 안됨
+    - 아래의 경우를 사용하는 것이 좋음
 - v comparison_operator all (subquery): subquery가 반환한 결과들과 v와의 비교 연산이 모두 true라면 true를 
 
 ```sql
