@@ -141,4 +141,15 @@ show create function id_generator;
 ### 앞의 3개의 function
 - dept_avg_salary는 비즈니스 로직을 가지지 않음
 - id_generator는 비즈니스 로직이라기에 조금은 애매함
-- toiec_pass_fail는 비즈니스 로직을 가짐 800이라는 점수 자체가 바뀔 수도 
+- toiec_pass_fail는 비즈니스 로직을 가짐 800이라는 점수 자체가 바뀔 수도
+
+---
+
+## 추가 정리 내용
+
+### Stored Function 필수 옵션들 (Data Access Characteristics)
+- No SQL: SQL문을 전혀 사용하지 않음
+- READS SQL DATA: select 문으로 데이터를 읽기만 함
+- MODIFIES SQL DATA: insert, update, delete 등으로 데이터를 수정함
+- DETERMINISTIC: 동일한 파라미터를 넣으면 항상 같은 결과를 반환할 때 사용 (MySQL이 이 결과를 캐싱하여 성능을 높임)
+- NOT DETERMINISTIC: 같은 파라미터를 넣어도 실행할 때마다 결과가 달라질 수 있음
