@@ -27,6 +27,11 @@ select * from employee order by dept_id asc, salary desc;
 - null이 있다면 null로 먼저 정렬함
 - 순서대로(dept_id, salary) 정렬을 해줌
 
+### 추가사항
+- 성능 주의사항
+    - order by는 데이터베이스에 상당한 부하를 줄 수 있는 연산
+    - 정렬하려는 컬럼에 인덱스가 걸려있지 않다면 메모리나 디스크를 사용해 직접 정렬해야하므로 쿼리 속도가 급격히 느려질 수 있음
+
 ---
 
 ## aggregate function
@@ -59,6 +64,17 @@ from works_on w join employee e
 where w.proj_id = 2002;
 ```
 
+### 디테일
+- count(*) vs count(attr) vs count(distinct attr)
+    - count(*): null 여부와 상관없이 테이블의 전체 행 수를 셈
+    - count(attr): 해당 컬럼에서 null을 제외한 값의 개수만 셈
+    - count(distict attr): 해다 컬럼에서 null을 제외하고 중복도 제거한 고유한 값의 개수만 셈
+        - 직급 종류 수 (select coutn(distinct position))
+
+    - null도 sum으로 계산하고 싶다면 null을 0으로 바꾸어주어야함
+        - avg(ifnull(salary, 0))
+
+
 ---
 
 ## group by
@@ -85,6 +101,10 @@ group by w.proj_id;
 - grouping attrs: 그룹을 나누는 기준이 되는 attrs
 - grouping attrs에 null 값이 있을 때는 null 값을 가지는 tuple끼리 묶임
 
+### 디테일
+- 원칙
+    - select 절에는 group by에 명시된 컬럼 또는 집계함수만 올 수 있음
+
 ---
 
 ## Having
@@ -101,6 +121,12 @@ having count(*) >= 7;
 - Group by와 함께 사용함
 - aggregate function의 결과값을 바탕으로 그룹을 필터링하고 싶을 때 사용함
 - having절에 명시된 조건을 만족하는 그룹만 결과에 포함됨
+
+### 디테일
+- where: group by를 하기 전에 개별 튜플들을 필터링함
+- having: group by를 한 후에 만들어진 그룹들을 필터링함
+- 만약 having으로 필터링할 수 있는 조건 중, 굳이 집게함수가 필요없는 조건이라면 무조건 where 절로 옮겨야 미리 데이터를 걸러내어 group by가 할 일을 줄일 수 있음
+
 
 ---
 
@@ -186,13 +212,18 @@ order by w.proj_id;
 
 ### select 실행 순서
 ```sql
-6. select attrs or aggregate functions
+5. select attrs or aggregate functions
 1. from tables
 2. [where conditions]
 3. [group by group attrs]
 4. [having group conditions]
-5. [order by attributes]
+6. [order by attributes]
 ```
 - select 쿼리에서 각 절(phrase)의 실행 순서는 개념적인 순서임
 - select 쿼리의 실제 실행 순서는 각 RDBMS에서 어떻게 구현했는지에 따라 다름
-    - Optimize를 해주는게 있음
+    - Optimize를 해주는게 
+    
+- 디테일
+    - 저 순서대로 작성되기 때문에 별칭을 사용할 수 있는 곳이 있고 없는 곳이 생김
+    - 예를 들면 select에서 별칭을 만들면 where 절에서 사용할 수 없음
+    - 위의 예로 order by는 select의 별칭을 사용할 수 있었음
