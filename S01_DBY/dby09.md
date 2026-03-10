@@ -69,7 +69,7 @@ where w.proj_id = 2002;
     - count(*): null 여부와 상관없이 테이블의 전체 행 수를 셈
     - count(attr): 해당 컬럼에서 null을 제외한 값의 개수만 셈
     - count(distict attr): 해다 컬럼에서 null을 제외하고 중복도 제거한 고유한 값의 개수만 셈
-        - 직급 종류 수 (select coutn(distinct position))
+        - 직급 종류 수 (select count(distinct position))
 
     - null도 sum으로 계산하고 싶다면 null을 0으로 바꾸어주어야함
         - avg(ifnull(salary, 0))
